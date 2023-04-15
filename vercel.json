@@ -1,0 +1,10 @@
+{
+    "routes": [
+      { "src": "/(.*)", "dest": "/chat.py" }
+    ],
+    "builds": [
+      { "src": "/templates/**", "use": "@vercel/static" },
+      { "src": "/chat.py", "use": "@vercel/python" }
+    ]
+  }
+  

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat Room</title>
+  </head>
+  <body>
+    <h1>Chat Room</h1>
+    <div id="messages"></div>
+    <form id="message-form">
+      <input type="text" id="message-input" placeholder="Enter your message...">
+      <button type="submit">Send</button>
+    </form>
+    <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+   
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+
+    <script>
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+      var room = "{{ room }}";
+      var username = "{{ username }}";
+
+      socket.on('connect', function() {
+        socket.emit('join', {'room': room, 'username': username});
+      });
+
+      socket.on('message', function(data) {
+        $('#messages').append('<p><strong>' + data.username + ':</strong> ' + data.message + '</p>');
+      });
+
+      $('#message-form').on('submit', function(event) {
+        event.preventDefault();
+        var message = $('#message-input').val();
+        socket.emit('message', {'room': room, 'username': username, 'message': message});
+        $('#message-input').val('');
+      });
+
+      window.onbeforeunload = function() {
+        socket.emit('leave', {'room': room, 'username': username});
+      };
+    </script>
+  </body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.message-content {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.message-content p {
+  margin: 0;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #999;
+  display: block;
+  text-align: right;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.chat-input input[type="text"] {
+  flex-grow: 1;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.chat-input button {
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+    <div class="chat-window">
+        <div class="chat-messages">
+          <div class="message">
+            <div class="message-content">
+              <p>Hi there!</p>
+              <span class="message-time">11:45 AM</span>
+            </div>
+          </div>
+          <div class="message">
+            <div class="message-content">
+              <p>How are you doing?</p>
+              <span class="message-time">11:47 AM</span>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Type your message here...">
+          <button>Send</button>
+        </div>
+      </div>
+      <script>
+        // Code for sending message
+const sendMessage = () => {
+  const message = document.querySelector('input[type="text"]').value;
+  // Send message to server using Ajax or WebSocket
+  // Add message to chat window
+  const messageHtml = `
+    <div class="message">
+      <div class="message-content">
+        <p>${message}</p>
+        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+      </div>
+    </div>
+  `;
+  const chatMessages = document.querySelector('.chat-messages');
+  chatMessages.insertAdjacentHTML('beforeend', messageHtml);
+  // Clear input field
+  document.querySelector('input[type="text"]').value = '';
+};
+
+// Code for receiving message
+const receiveMessage = (message) => {
+  const messageHtml = `
+    <div class="message">
+      <div class="message-content">
+        <p>${message}</p>
+        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+      </div>
+    </div>
+  `;
+  const chatMessages = document.querySelector('.chat-messages');
+  chatMessages.insertAdjacentHTML('beforeend', messageHtml);
+};
+
+// Event listener for sending message
+document.querySelector('button').addEventListener('click', sendMessage);
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    sendMessage();
+  }
+});
+</script>
+    
+</body>
+</html> -->
