@@ -15,7 +15,7 @@ def chat():
     room = request.args.get('room')
     username = request.args.get('username')
     if room and username:
-        return render_template('chat.html', room=room, username=username)
+        return render_template('index.html', room=room, username=username)
     else:
         return "Error: please provide a room and a username."
 
